@@ -1,0 +1,98 @@
+SqlFlatFileImporter
+
+This is a secure, scalable C# utility for importing flat .txt files into an Azure SQL Database using SqlBulkCopy.
+The system validates and transforms data per table schema, logs detailed results, and sends error reports by email.
+Designed for daily batch imports (eg., via Windows Task Scheduler), this project supports secure credential handling using !!! Azure Key Vault !!!
+
+FEATURES
+
+* Secure Secrets:			Uses Azure Key Vault to fetch database and SMTP credentials
+* Dynamic Table Support:	Easily extend schemas in TableSchemas.cs
+* Row Validation:			Skips Invalid rows and logs detailed errors
+* High Performance:			Uses SqlBulkCopy for effiecint multi-million row inserts
+* Email Notification:		Sends success/failure logs with attachments
+* Modular Design:			Separation of import, validation, logging, helpers, and config responsibilities
+
+PROJECT STRUCTURE
+
+SqlFlatFileImporter
+|- Program.cs
+|- Config.cs
+|- READ.ME
+|- Import/
+|	|_ TableImporter.cs
+|	|_ TableSchemas.cs
+|	|_ Validator.cs
+|	
+|- Logging/
+|	|- ErrorLogging.cs
+|
+|- Helper
+|	|-ParseHelper.cs
+|
+|-Email/
+|	|-EmailHelper.cs
+
+SETUP
+--
+Prerequisites
+	* .NET 6+ SDK
+	* Azure Key Vault with secrets:
+		> SqlDbUser
+		> SqlDbPassword
+		> SmtpUsername
+		> SmtpPassword
+	* Access to your Azure SQL Database
+	* Permission to use Azure Managed Identity or local credentials
+--
+Required NuGet Packages
+	dotnet add package Microsoft.Data.SqlClient
+	dotnet add package Azure.Identity
+	dotnet add package Azure.Security.KeyValut.Secrets
+
+RUNNING THE PROGRAM
+	Use a .bat file like this to launch
+	@echo off
+	"C:\path\to\SqlFlatFileImporter.exe"
+[No Credentials are passed - they are securely retrieved from Azure Key Vault]
+
+SECRETS IN AZURE KEY VAULT
+
+----------------------------------------+
+SECRET NAME		Example Value			|
+										|
+SqlDbUser ----- my_user					|
+SqlDbPassword - SuperSecureP@ss			|
+SmtpUsername -- smtp_user@domain.com	|
+SmtpPassword -- SmtpSecureP@ss			|
+										|
+----------------------------------------+
+
+KEY TECHNOLOGIES & DOCUMENTATION
+
+Namespace/Feature					Purpose										Documentation
+
+Microsoft.Data.Sqlclient			SQL Server Connectivity						https://learn.microsoft.com/en-us/dotnet/api/microsoft.data.sqlclient?view=sqlclient-dotnet-core-6.0
+Azure.Security.KeyVault.Secretes	Access Azure Key Vault Secrets				https://learn.microsoft.com/en-us/dotnet/api/azure.security.keyvault.secrets?view=azure-dotnet
+Azure.Identity						Authentication for Azure Resources			https://learn.microsoft.com/en-us/dotnet/api/azure.identity.defaultazurecredential?view=azure-dotnet
+System.Net.Mail						SMTP email delivery							https://learn.microsoft.com/en-us/dotnet/api/system.net.mail.smtpclient?view=net-9.0
+System.Data/SqlBulkCopy				Bulk loading data into SQL Server			https://learn.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlbulkcopy?view=net-9.0-pp
+System.Globalization				Local-safe date/decimal parsing				https://learn.microsoft.com/en-us/dotnet/api/system.globalization?view=net-9.0
+
+* Typical Maintenance *
+
+Extending the Importer
+To add a new table
+	1. Design table in SQL Server Management Studio or Azure Data Studio
+	2. Define the schema in TableSchemas.cs
+	3. Add the table name to the tablesToImport list in Program.cs
+	4. Ensure the corresponding .txt file exists in ImportDirectory
+
+* Security Notes
+- No hardcoded passwords
+- Uses Azure Key Vault and Default Azure Dredential (suports VS, CLI, and managed identity)
+- Logs written ExportDirectory and optionally emailed
+
+QUESTIONS
+
+Reach out to jpierce@darraghcompany.com or your Azure admin for Key Vault setup help
