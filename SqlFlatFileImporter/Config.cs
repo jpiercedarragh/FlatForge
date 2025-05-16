@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 
-namespace SqlFlatFileImporter
+namespace FlatForge
 {
     public static class Config
     {

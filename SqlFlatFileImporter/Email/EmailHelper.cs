@@ -3,7 +3,7 @@ using System.IO;
 using System.Net;
 using System.Net.Mail;
 
-namespace SqlFlatFileImporter.Email
+namespace FlatForge.Email
 {
     public static class EmailHelper
     {

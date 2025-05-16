@@ -1,10 +1,10 @@
-﻿using SqlFlatFileImporter.Logging;
+﻿using FlatForge.Logging;
 using System;
 using System.Data;
 using System.IO;
 using Microsoft.Data.SqlClient;
 
-namespace SqlFlatFileImporter.Import
+namespace FlatForge.Import
 {
     public static class TableImporter
     {

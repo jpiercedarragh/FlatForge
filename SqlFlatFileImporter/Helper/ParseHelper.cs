@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization; // install on server before deployment (available in local dev environment not live prod environment)
 
-namespace SqlFlatFileImporter.Helpers
+namespace FlatForge.Helpers
 {
     public static class ParseHelper
     {

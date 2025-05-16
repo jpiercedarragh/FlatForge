@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Data;
-using SqlFlatFileImporter.Helpers;
+using FlatForge.Helpers;
 
-namespace SqlFlatFileImporter.Import
+namespace FlatForge.Import
 {
     public static class Validator
     {

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using SqlFlatFileImporter.Import;
-using SqlFlatFileImporter.Logging;
-using SqlFlatFileImporter.Email;
+using FlatForge.Import;
+using FlatForge.Logging;
+using FlatForge.Email;
 
-namespace SqlFlatFileImporter
+namespace FlatForge
 {
     class Program
     {

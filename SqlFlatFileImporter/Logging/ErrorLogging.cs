@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace SqlFlatFileImporter.Logging
+namespace FlatForge.Logging
 {
     public class Logger : IDisposable
     {
