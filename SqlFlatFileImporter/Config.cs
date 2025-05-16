@@ -1,44 +1,47 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 
 namespace FlatForge
 {
-    public static class Config
+    public class Config
     {
-        public static string ImportDirectory => @"C:\SqlImport\Exports\";
-        public static string ExportDirectory => @"C:\SqlImport\ErrorLogs\";
+        public string ImportDirectory => @"C:\SqlImport\Exports\";
+        public string ExportDirectory => @"C:\SqlImport\ErrorLogs\";
 
-        public static string DbUser { get; private set; } = string.Empty;
-        public static string DbPassword { get; private set; } = string.Empty;
-        public static string ConnectionString { get; private set; } = string.Empty;
+        public string DbUser { get; private set; } = string.Empty;
+        public string DbPassword { get; private set; } = string.Empty;
+        public string ConnectionString { get; private set; } = string.Empty;
 
-        public static string SmtpUsername { get; private set; } = string.Empty;
-        public static string SmtpPassword { get; private set; } = string.Empty;
+        public string SmtpUsername { get; private set; } = string.Empty;
+        public string SmtpPassword { get; private set; } = string.Empty;
 
-        public static string SmtpServer => "smtp.domain.com";
-        public static int SmtpPort => 587;
-        public static string EmailFrom => "noreply@domain.com";
-        public static string EmailTo => "name@domain.com";
+        public string SmtpServer => "smtp.darraghcompany.com";
+        public int SmtpPort => 587;
+        public string EmailFrom => "noreply@darraghcompany.com";
+        public string EmailTo => "jpierce@darraghcompany.com";
 
-        private static readonly string KeyVaultName = "AzureKeyVaultName"; // change me
-        private static readonly string VaultUri = $"https://{KeyVaultName}.vault.azure.net/";
+        public static readonly string KeyVaultName = "AzureKeyVaultName";
+        public static readonly string VaultUri = $"https://{KeyVaultName}.vault.azure.net/";
 
-        public static async Task LoadSecretsAsync()
+        private readonly SecretClient _secretClient;
+
+        public Config(SecretClient secretClient)
         {
-            var client = new SecretClient(new Uri(VaultUri), new DefaultAzureCredential());
+            _secretClient = secretClient;
+        }
 
-            DbUser = (await client.GetSecretAsync("SqlDbUser")).Value.Value?.Trim()
-                           ?? throw new Exception("SqlDbUser not found in Key Vault.");
-            DbPassword = (await client.GetSecretAsync("SqlDbPassword")).Value.Value?.Trim()
-                           ?? throw new Exception("SqlDbPassword not found in Key Vault.");
-            SmtpUsername = (await client.GetSecretAsync("SmtpUsername")).Value.Value?.Trim()
-                           ?? throw new Exception("SmtpUsername not found in Key Vault.");
-            SmtpPassword = (await client.GetSecretAsync("SmtpPassword")).Value.Value?.Trim()
-                           ?? throw new Exception("SmtpPassword not found in Key Vault.");
+        public async Task LoadSecretsAsync()
+        {
+            DbUser = (await _secretClient.GetSecretAsync("SqlDbUser")).Value.Value?.Trim()
+                     ?? throw new Exception("SqlDbUser not found.");
+            DbPassword = (await _secretClient.GetSecretAsync("SqlDbPassword")).Value.Value?.Trim()
+                     ?? throw new Exception("SqlDbPassword not found.");
+            SmtpUsername = (await _secretClient.GetSecretAsync("SmtpUsername")).Value.Value?.Trim()
+                     ?? throw new Exception("SmtpUsername not found.");
+            SmtpPassword = (await _secretClient.GetSecretAsync("SmtpPassword")).Value.Value?.Trim()
+                     ?? throw new Exception("SmtpPassword not found.");
 
-            //Build connection string dynamically
             ConnectionString = $"Server=tcp:darragh.database.windows.net,1433;" +
                                $"Database=darragh-dev;" +
                                $"User ID={DbUser};" +
@@ -47,14 +50,10 @@ namespace FlatForge
                                $"TrustServerCertificate=False;";
         }
 
-        public static void Validate()
+        public void Validate()
         {
             if (string.IsNullOrWhiteSpace(ConnectionString))
                 throw new Exception("SQL Connection string is not set.");
-            if (string.IsNullOrWhiteSpace(ImportDirectory))
-                throw new Exception("Import directory path is not set.");
-            if (string.IsNullOrWhiteSpace(ExportDirectory))
-                throw new Exception("Export directory path is not set.");
         }
     }
 }
