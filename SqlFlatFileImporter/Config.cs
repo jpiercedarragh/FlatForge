@@ -17,10 +17,10 @@ namespace FlatForge
         public static string SmtpUsername { get; private set; } = string.Empty;
         public static string SmtpPassword { get; private set; } = string.Empty;
 
-        public static string SmtpServer => "smtp.darraghcompany.com";
+        public static string SmtpServer => "smtp.domain.com";
         public static int SmtpPort => 587;
-        public static string EmailFrom => "noreply@darraghcompany.com";
-        public static string EmailTo => "jpierce@darraghcompany.com";
+        public static string EmailFrom => "noreply@domain.com";
+        public static string EmailTo => "name@domain.com";
 
         private static readonly string KeyVaultName = "AzureKeyVaultName"; // change me
         private static readonly string VaultUri = $"https://{KeyVaultName}.vault.azure.net/";
